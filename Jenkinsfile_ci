@@ -2,7 +2,7 @@ pipeline {
 agent any   
     environment {
          registry = "saikiran232/java_app"
-         registryCredential = 'dockerhub'
+         registryCredential = 'dockerhub_sk'
          dockerImage = ''
     }  
       stages {
