@@ -11,6 +11,7 @@ pipeline {
             steps {
                dir('./calculator_app'){
                 sh 'ls -lrt'
+                sh 'docker build -t saikiran232/java_app .'
                }
                
             }
