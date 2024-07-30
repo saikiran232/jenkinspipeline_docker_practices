@@ -1,0 +1,77 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'maven_3.9.8'
+    }
+
+    stages {
+        stage('Code Checkout') {
+            steps {
+                checkout([$class: 'GitSCM',
+                        branches: [[name: 'main']],
+                        userRemoteConfigs: [[url: 'https://github.com/harshaprakash100/java_app.git',
+                        credentialsId: 'github_hp']]])
+            }
+        }
+
+        stage('Unit Testing') {
+            steps {
+                sh '''
+                    cd ./calculator_app
+                    mvn test
+                '''
+            }
+        }
+
+        stage('Integration Testing') {
+            steps {
+                dir('./calculator_app') {
+                    sh 'mvn integration-test'
+                }
+            }
+        }
+
+        stage('Load Testing') {
+            steps {
+                dir('./calculator_app') {
+                    sh 'mvn clean verify'
+                }
+            }
+        }
+
+        stage('Check Files') {
+            steps {
+                dir('./calculator_app/') {
+                    sh 'tree'
+                }
+            }
+        }
+
+        stage('Deploy Tomcat10') {
+            input {
+                message "Do you want to deploy calculator.war to Tomcat10?"
+                parameters {
+                    choice(name: 'CHOICES', choices: ['yes', 'no'], description: '')
+                }
+            }
+            steps {
+                script {
+                    if (CHOICES == 'yes') {
+                        deploy adapters: [tomcat9(credentialsId: 'tomcat_manager', url: 'http://3.110.27.147:8080', path: '')],
+                                        contextPath: '/calculator',
+                                        war: 'calculator_app/target/calculator.war'
+                    } else {
+                        echo "Skipping deployment to Tomcat10"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
