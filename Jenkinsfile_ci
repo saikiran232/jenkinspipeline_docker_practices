@@ -1,10 +1,10 @@
 pipeline {
-agent any   
-    environment {
+      agent any   
+        environment {
          registry = "saikiran232/java_app"
          registryCredential = 'dockerhub_sk'
          dockerImage = ''
-    }  
+        }  
       stages {
                stage('CHECKOUT') {
                    steps {
@@ -20,17 +20,12 @@ agent any
                 }
                stage('Deploy Image') {
                    steps{
-                      script {
-                          docker.withRegistry( '', registryCredential ) {
-                            dockerImage.push()
-                          }
+                         script {
+                                  docker.withRegistry( '', registryCredential ) {
+                                  dockerImage.push()
+                                  }
+                                }
                         }
-                    }
-                }
-               stage('Remove Unused docker image') {
-                    steps{
-                        sh "docker rmi $registry:$BUILD_NUMBER"
-                    }
                 }
         }
 }
