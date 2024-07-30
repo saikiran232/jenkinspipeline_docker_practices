@@ -1,0 +1,22 @@
+pipeline {
+    environment {
+         registry = "saikiran232/java_app"
+      registryCredential = 'dockerhub'
+    }
+  agent any
+  stages {
+    stage('CHECKOUT') {
+      steps {
+           checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github_sk', url: 'https://github.com/saikiran232/java_app.git']])
+        }
+    }
+
+    stage('Building image') {
+      steps{
+        script {
+          docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+    }
+  }
+}

@@ -29,7 +29,7 @@ pipeline{
                script  {
                  def tomcatImage = ''
                  dir('./calculator_app/')  {
-                        docker.withRegistry('',  'docker_hub'){
+                        docker.withRegistry( '',  'docker_hub' ){
                           tomcatImage = docker.build("saikiran232/java_app:latest",  " .")
                         }
                     }
