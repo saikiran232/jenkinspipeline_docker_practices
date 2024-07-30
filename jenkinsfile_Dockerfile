@@ -1,0 +1,9 @@
+pipeline {
+    agent any
+    stages {
+        stage('CHECKOUT') {
+            steps {
+               checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github_saikiran232', url: 'https://github.com/saikiran232/java_app.git']])
+            }
+        }
+    }
